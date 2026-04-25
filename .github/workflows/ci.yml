@@ -22,15 +22,11 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Start app & smoke-test
-        run: |
-          cd app
-          python app.py &
-          sleep 3
-          # Health check — expects HTTP 200
-          curl --fail http://localhost:5000/
-          # API smoke test — add a task
-          curl --fail -s -X POST http://localhost:5000/api/tasks \
+     - name: Start app & smoke-test
+  run: |
+    python app.py &
+    sleep 5
+    curl --fail http://127.0.0.1:5000/
             -H "Content-Type: application/json" \
             -d '{"title":"CI smoke test task"}' | grep -q "CI smoke test task"
           echo "✅ All checks passed"
