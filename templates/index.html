@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tasky — To-Do List</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+
+    <main class="container">
+      <header class="header">
+        <span class="logo-dot"></span>
+        <h1 class="logo">Tasky</h1>
+        <p class="subtitle">Your calm corner for getting things done.</p>
+      </header>
+
+      <!-- Add Task -->
+      <div class="add-task-card">
+        <input
+          id="taskInput"
+          class="task-input"
+          type="text"
+          placeholder="What needs doing today?"
+          autocomplete="off"
+        />
+        <button class="add-btn" onclick="addTask()">
+          <span class="plus-icon">+</span> Add
+        </button>
+      </div>
+
+      <!-- Stats Bar -->
+      <div class="stats-bar">
+        <span id="totalCount">0 tasks</span>
+        <span id="doneCount">0 done</span>
+      </div>
+
+      <!-- Task List -->
+      <ul class="task-list" id="taskList">
+        <!-- Tasks injected by JS -->
+      </ul>
+
+      <p class="empty-state" id="emptyState">No tasks yet — add one above ✨</p>
+    </main>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+  </body>
+</html>

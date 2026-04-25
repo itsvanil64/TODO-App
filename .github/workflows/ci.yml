@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Start app & smoke-test
+        run: |
+          cd app
+          python app.py &
+          sleep 3
+          # Health check — expects HTTP 200
+          curl --fail http://localhost:5000/
+          # API smoke test — add a task
+          curl --fail -s -X POST http://localhost:5000/api/tasks \
+            -H "Content-Type: application/json" \
+            -d '{"title":"CI smoke test task"}' | grep -q "CI smoke test task"
+          echo "✅ All checks passed"
+
+  docker:
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t tasky-app .
+
+      - name: Run container & smoke-test
+        run: |
+          docker run -d -p 5000:5000 --name tasky tasky-app
+          sleep 4
+          curl --fail http://localhost:5000/
+          docker stop tasky
+          echo "✅ Docker image works"
